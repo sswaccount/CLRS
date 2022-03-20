@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-14 19:16:32
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-20 18:55:23
+ * @LastEditTime: 2022-03-21 01:26:12
  */
 #include <iostream>
 using namespace std;
@@ -105,17 +105,6 @@ void Tree<T>::InsertNode(T z)
 }
 
 template <typename T>
-void Tree<T>::InorderTreeWalk(TreeNode<T> *_root) const
-{
-    if (_root != nullptr)
-    {
-        InorderTreeWalk(_root->_left);
-        cout << _root->_key << ' ';
-        InorderTreeWalk(_root->_right);
-    }
-}
-
-template <typename T>
 void Tree<T>::PreorderTreeWalk(TreeNode<T> *_root) const
 {
     if (_root != nullptr)
@@ -123,6 +112,17 @@ void Tree<T>::PreorderTreeWalk(TreeNode<T> *_root) const
         cout << _root->_key << ' ';
         PreorderTreeWalk(_root->_left);
         PreorderTreeWalk(_root->_right);
+    }
+}
+
+template <typename T>
+void Tree<T>::InorderTreeWalk(TreeNode<T> *_root) const
+{
+    if (_root != nullptr)
+    {
+        InorderTreeWalk(_root->_left);
+        cout << _root->_key << ' ';
+        InorderTreeWalk(_root->_right);
     }
 }
 
@@ -180,7 +180,7 @@ void Tree<T>::TreeDelete(TreeNode<T> *z)
     if (z->_left == nullptr)
         Translant(z, z->_right);
     else if (z->_right == nullptr)
-        Translant(z, z->_right);
+        Translant(z, z->_left);
     else
     {
         TreeNode<T> *y = TreeMinNum(z->_right);
