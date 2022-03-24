@@ -3,11 +3,17 @@
  * @Author: ssw
  * @Date: 2022-03-14 19:16:32
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-21 01:26:12
+ * @LastEditTime: 2022-03-24 19:37:00
  */
 #include <iostream>
 using namespace std;
 using namespace std;
+
+enum COLOR
+{
+    RED,
+    BALCK,
+};
 
 template <typename T>
 struct TreeNode
@@ -16,8 +22,13 @@ struct TreeNode
     TreeNode<T> *_left;
     TreeNode<T> *_right;
     TreeNode<T> *_p;
+    COLOR color;
     TreeNode(T data)
-        : _key(data), _left(nullptr), _right(nullptr), _p(nullptr) {}
+        : _key(data),
+          _left(nullptr),
+          _right(nullptr),
+          _p(nullptr),
+          color(RED) {}
 };
 
 template <typename T>
@@ -32,6 +43,14 @@ public:
     Tree(T key) : root(new TreeNode<T>(key)) {}
 
     TreeNode<T> *GetRoot() const { return this->root; }
+    void SetRoot(TreeNode<T> *_root)
+    {
+        root = _root;
+    }
+    void SetRootColor(COLOR c)
+    {
+        root->color = c;
+    }
     void InsertNode(T z);
     void InorderTreeWalk(TreeNode<T> *_root) const;
     void PreorderTreeWalk(TreeNode<T> *_root) const;
