@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-24 14:46:29
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-25 20:50:23
+ * @LastEditTime: 2022-03-25 23:52:20
  */
 #include <iostream>
 #include "../12.BinSerTree/binSerTree.h"
@@ -14,7 +14,8 @@ template <typename T>
 class RBTree : public Tree<T>
 {
 private:
-    TreeNode<T> *NIL = nullptr;
+    // TreeNode<T> *NIL = new TreeNode<T>(nullptr);
+    TreeNode<T> *NIL = new TreeNode<T>();
 
 public:
     BRTree();
@@ -36,7 +37,7 @@ void RBTree<T>::LeftRotate(TreeNode<T> *x)
         y->_left->_p = x;
     y->_p = x->_p;
     if (x->_p == NIL)
-        y = Tree<T>::GetRoot();
+        Tree<T>::SetRoot(y);
     else if (x == x->_p->_left)
         x->_p->_left = y;
     else
@@ -53,8 +54,9 @@ void RBTree<T>::RightRotate(TreeNode<T> *y)
     if (x->_right != NIL)
         x->_right->_p = y;
     x->_p = y->_p;
+    cout << "RR : " << x->_p->_key << endl;
     if (y->_p == NIL)
-        x = Tree<T>::GetRoot();
+        Tree<T>::SetRoot(x);
     else if (y == y->_p->_left)
         y->_p->_left = x;
     else
@@ -69,14 +71,20 @@ void RBTree<T>::InsertNode(T z)
     TreeNode<T> *NowNode = new TreeNode<T>(z);
     TreeNode<T> *y = NIL;
     TreeNode<T> *x = Tree<T>::GetRoot();
-    while (x != NIL)
+
+    // cout << "insert test 1" << endl;
+    // 如果构造函数是空节点会被赋值空指针
+    // 如果单纯检验是否为NIL不全面
+    while (x && x != NIL)
     {
+        // cout << "find null" << endl;
         y = x;
         if (NowNode->_key < x->_key)
             x = x->_left;
         else
             x = x->_right;
     }
+    // cout << "insert test 2" << endl;
     NowNode->_p = y;
     if (y == NIL)
         Tree<T>::SetRoot(NowNode);
@@ -84,6 +92,12 @@ void RBTree<T>::InsertNode(T z)
         y->_left = NowNode;
     else
         y->_right = NowNode;
+
+    // cout << "inside inorder : ";
+    // Tree<T>::InorderTreeWalk(Tree<T>::GetRoot());
+    // cout << endl;
+    // cout << nullptr << endl;
+    // cout << "insert test 3" << endl;
     NowNode->_left = NIL;
     NowNode->_right = NIL;
     NowNode->color = RED;
@@ -95,7 +109,7 @@ void RBTree<T>::InsertFixup(TreeNode<T> *z)
 {
     cout << "fix : " << z->_key << endl;
     // if()
-    while ((z->_p) && z->_p->color == RED)
+    while ((z->_p != NIL) && z->_p->color == RED)
     {
         cout << "ddd" << endl;
         if ((z->_p->_p) && (z->_p == z->_p->_p->_left))
@@ -118,14 +132,19 @@ void RBTree<T>::InsertFixup(TreeNode<T> *z)
                     z = z->_p;
                     LeftRotate(z);
                 }
+                cout << "------------" << endl;
+                cout << z->_key << endl;
+                cout << z->_p->_key << endl;
+                cout << "------------" << endl;
                 cout << "1.3" << endl;
                 z->_p->color = BALCK;
                 z->_p->_p->color = RED;
                 RightRotate(z->_p->_p);
+                cout << Tree<T>::GetRoot()->_key << endl;
             }
             cout << "over xxx111111111" << endl;
         }
-        else if ((z->_p->_p) && z->_p == z->_p->_p->_right)
+        else if ((z->_p->_p) && z->_p == z-> _p->_p->_right)
         {
             cout << "xxx22222222" << endl;
             TreeNode<T> *y = z->_p->_p->_left;

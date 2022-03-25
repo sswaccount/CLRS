@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-14 19:16:32
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-25 17:53:39
+ * @LastEditTime: 2022-03-25 22:38:53
  */
 #include <iostream>
 #include <sstream>
@@ -26,12 +26,12 @@ struct TreeNode
     TreeNode<T> *_right;
     TreeNode<T> *_p;
     COLOR color;
-    TreeNode(T data)
+    TreeNode(T data = -1)
         : _key(data),
           _left(nullptr),
           _right(nullptr),
           _p(nullptr),
-          color(RED) {}
+          color(BALCK) {}
 };
 
 template <typename T>
@@ -130,34 +130,37 @@ void Tree<T>::InsertNode(T z)
 template <typename T>
 void Tree<T>::PreorderTreeWalk(TreeNode<T> *_root) const
 {
-    if (_root != nullptr)
-    {
-        cout << _root->_key << ' ';
-        PreorderTreeWalk(_root->_left);
-        PreorderTreeWalk(_root->_right);
-    }
+    if (_root == nullptr)
+        return;
+    if (_root->_key == -1)
+        return;
+    cout << _root->_key << ' ';
+    PreorderTreeWalk(_root->_left);
+    PreorderTreeWalk(_root->_right);
 }
 
 template <typename T>
 void Tree<T>::InorderTreeWalk(TreeNode<T> *_root) const
 {
-    if (_root != nullptr)
-    {
-        InorderTreeWalk(_root->_left);
-        cout << _root->_key << ' ';
-        InorderTreeWalk(_root->_right);
-    }
+    if (_root == nullptr)
+        return;
+    if (_root->_key == -1)
+        return;
+    InorderTreeWalk(_root->_left);
+    cout << _root->_key << ' ';
+    InorderTreeWalk(_root->_right);
 }
 
 template <typename T>
 void Tree<T>::PostorderTreeWalk(TreeNode<T> *_root) const
 {
-    if (_root != nullptr)
-    {
-        PostorderTreeWalk(_root->_left);
-        PostorderTreeWalk(_root->_right);
-        cout << _root->_key << ' ';
-    }
+    if (_root == nullptr)
+        return;
+    if (_root->_key == -1)
+        return;
+    PostorderTreeWalk(_root->_left);
+    PostorderTreeWalk(_root->_right);
+    cout << _root->_key << ' ';
 }
 
 template <typename T>
@@ -232,6 +235,8 @@ void Tree<T>::TreeOut(TreeNode<T> *x, string name)
     freopen(filename, "w", stdout);
     cout << "digraph Tree{" << endl;
     queue<TreeNode<T> *> q;
+    if(x->_p!=nullptr)
+        cout << x->_key << "->" << x->_p->_key << endl;
     q.push(x);
     while (q.size())
     {
