@@ -3,9 +3,12 @@
  * @Author: ssw
  * @Date: 2022-03-14 19:16:32
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-24 19:37:00
+ * @LastEditTime: 2022-03-25 17:53:39
  */
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <queue>
 using namespace std;
 using namespace std;
 
@@ -59,6 +62,7 @@ public:
     TreeNode<T> *IterativeTreeSearch(TreeNode<T> *x, T k) const;
     void Translant(TreeNode<T> *u, TreeNode<T> *v);
     void TreeDelete(TreeNode<T> *z);
+    void TreeOut(TreeNode<T> *x, string name = "test");
     TreeNode<T> *TreeMinNum(TreeNode<T> *x) const
     {
         while (x->_left != nullptr)
@@ -213,4 +217,39 @@ void Tree<T>::TreeDelete(TreeNode<T> *z)
         y->_left = z->_left;
         y->_left->_p = y;
     }
+}
+
+template <typename T>
+void Tree<T>::TreeOut(TreeNode<T> *x, string name)
+{
+    // 声明文件名称
+    stringstream sstr;
+    name = name + ".dot";
+    int num = name.size() + 1;
+    char *filename = new char[num];
+    sstr << name;
+    sstr >> filename;
+    freopen(filename, "w", stdout);
+    cout << "digraph Tree{" << endl;
+    queue<TreeNode<T> *> q;
+    q.push(x);
+    while (q.size())
+    {
+        TreeNode<T> *tmp = q.front();
+        q.pop();
+        if (tmp->_left)
+        {
+            cout << tmp->_key << "->" << tmp->_left->_key << endl;
+            q.push(tmp->_left);
+        }
+        if (tmp->_right)
+        {
+            cout << tmp->_key << "->" << tmp->_right->_key << endl;
+            q.push(tmp->_right);
+        }
+        // cerr << q.size() << endl;
+    }
+
+    cout << "}" << endl;
+    fclose(stdout);
 }

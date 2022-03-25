@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-24 14:46:29
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-24 20:28:59
+ * @LastEditTime: 2022-03-25 20:50:23
  */
 #include <iostream>
 #include "../12.BinSerTree/binSerTree.h"
@@ -97,11 +97,14 @@ void RBTree<T>::InsertFixup(TreeNode<T> *z)
     // if()
     while ((z->_p) && z->_p->color == RED)
     {
+        cout << "ddd" << endl;
         if ((z->_p->_p) && (z->_p == z->_p->_p->_left))
         {
+            cout << "xxx11111111" << endl;
             TreeNode<T> *y = z->_p->_p->_right;
             if (y->color == RED)
             {
+                cout << "1.1" << endl;
                 z->_p->color = BALCK;
                 y->color = BALCK;
                 z->_p->_p->color = RED;
@@ -111,19 +114,24 @@ void RBTree<T>::InsertFixup(TreeNode<T> *z)
             {
                 if (z == z->_p->_right)
                 {
+                    cout << "1.2" << endl;
                     z = z->_p;
                     LeftRotate(z);
                 }
+                cout << "1.3" << endl;
                 z->_p->color = BALCK;
                 z->_p->_p->color = RED;
                 RightRotate(z->_p->_p);
             }
+            cout << "over xxx111111111" << endl;
         }
         else if ((z->_p->_p) && z->_p == z->_p->_p->_right)
         {
+            cout << "xxx22222222" << endl;
             TreeNode<T> *y = z->_p->_p->_left;
             if (y->color == RED)
             {
+                cout << "2.1" << endl;
                 z->_p->color = BALCK;
                 y->color = BALCK;
                 z->_p->_p->color = RED;
@@ -133,13 +141,16 @@ void RBTree<T>::InsertFixup(TreeNode<T> *z)
             {
                 if (z == z->_p->_left)
                 {
+                    cout << "2.2" << endl;
                     z = z->_p;
                     RightRotate(z);
                 }
+                cout << "2.3" << endl;
                 z->_p->color = BALCK;
                 z->_p->_p->color = RED;
                 LeftRotate(z->_p->_p);
             }
+            cout << "over xxx2222222222222" << endl;
         }
     }
     cout << "fixok : " << z->_key << endl;
