@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-24 14:46:29
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-25 23:52:20
+ * @LastEditTime: 2022-03-26 17:32:16
  */
 #include <iostream>
 #include "../12.BinSerTree/binSerTree.h"
@@ -26,6 +26,8 @@ public:
     void RightRotate(TreeNode<T> *x);
     void LeftRotate(TreeNode<T> *x);
     void Translant(TreeNode<T> *u, TreeNode<T> *v);
+    void TreeDelete(TreeNode<T> *z);
+    void DeleteFixup(TreeNode<T> *x);
 };
 
 template <typename T>
@@ -54,7 +56,7 @@ void RBTree<T>::RightRotate(TreeNode<T> *y)
     if (x->_right != NIL)
         x->_right->_p = y;
     x->_p = y->_p;
-    cout << "RR : " << x->_p->_key << endl;
+    // cout << "RR : " << x->_p->_key << endl;
     if (y->_p == NIL)
         Tree<T>::SetRoot(x);
     else if (y == y->_p->_left)
@@ -107,18 +109,18 @@ void RBTree<T>::InsertNode(T z)
 template <typename T>
 void RBTree<T>::InsertFixup(TreeNode<T> *z)
 {
-    cout << "fix : " << z->_key << endl;
+    // cout << "fix : " << z->_key << endl;
     // if()
     while ((z->_p != NIL) && z->_p->color == RED)
     {
-        cout << "ddd" << endl;
+        // cout << "ddd" << endl;
         if ((z->_p->_p) && (z->_p == z->_p->_p->_left))
         {
-            cout << "xxx11111111" << endl;
+            // cout << "xxx11111111" << endl;
             TreeNode<T> *y = z->_p->_p->_right;
             if (y->color == RED)
             {
-                cout << "1.1" << endl;
+                // cout << "1.1" << endl;
                 z->_p->color = BALCK;
                 y->color = BALCK;
                 z->_p->_p->color = RED;
@@ -128,29 +130,29 @@ void RBTree<T>::InsertFixup(TreeNode<T> *z)
             {
                 if (z == z->_p->_right)
                 {
-                    cout << "1.2" << endl;
+                    // cout << "1.2" << endl;
                     z = z->_p;
                     LeftRotate(z);
                 }
-                cout << "------------" << endl;
-                cout << z->_key << endl;
-                cout << z->_p->_key << endl;
-                cout << "------------" << endl;
-                cout << "1.3" << endl;
+                // cout << "------------" << endl;
+                // cout << z->_key << endl;
+                // cout << z->_p->_key << endl;
+                // cout << "------------" << endl;
+                // cout << "1.3" << endl;
                 z->_p->color = BALCK;
                 z->_p->_p->color = RED;
                 RightRotate(z->_p->_p);
-                cout << Tree<T>::GetRoot()->_key << endl;
+                // cout << Tree<T>::GetRoot()->_key << endl;
             }
-            cout << "over xxx111111111" << endl;
+            // cout << "over xxx111111111" << endl;
         }
-        else if ((z->_p->_p) && z->_p == z-> _p->_p->_right)
+        else if ((z->_p->_p) && z->_p == z->_p->_p->_right)
         {
-            cout << "xxx22222222" << endl;
+            // cout << "xxx22222222" << endl;
             TreeNode<T> *y = z->_p->_p->_left;
             if (y->color == RED)
             {
-                cout << "2.1" << endl;
+                // cout << "2.1" << endl;
                 z->_p->color = BALCK;
                 y->color = BALCK;
                 z->_p->_p->color = RED;
@@ -160,19 +162,18 @@ void RBTree<T>::InsertFixup(TreeNode<T> *z)
             {
                 if (z == z->_p->_left)
                 {
-                    cout << "2.2" << endl;
+                    // cout << "2.2" << endl;
                     z = z->_p;
                     RightRotate(z);
                 }
-                cout << "2.3" << endl;
+                // cout << "2.3" << endl;
                 z->_p->color = BALCK;
                 z->_p->_p->color = RED;
                 LeftRotate(z->_p->_p);
             }
-            cout << "over xxx2222222222222" << endl;
         }
     }
-    cout << "fixok : " << z->_key << endl;
+    // cout << "fixok : " << z->_key << endl;
     Tree<T>::SetRootColor(BALCK);
 }
 
@@ -180,10 +181,91 @@ template <typename T>
 void RBTree<T>::Translant(TreeNode<T> *u, TreeNode<T> *v)
 {
     if (u->_p == NIL)
-        SetRoot(v);
+        Tree<T>::SetRoot(v);
     else if (u == u->_p->_left)
         u->_p->_left = v;
     else
         u->_p->_right = v;
     v->_p = u->_p;
+}
+
+template <typename T>
+void RBTree<T>::TreeDelete(TreeNode<T> *z)
+{
+    cerr << "come in" << endl;
+    TreeNode<T> *y = z;
+    TreeNode<T> *x = nullptr;
+    COLOR y_originalcolor = y->color;
+    cerr << "111111111111111111111" << endl;
+    if (z->_left == NIL)
+    {
+        x = z->_right;
+        Translant(z, z->_right);
+    }
+    else if (z->_right == NIL)
+    {
+        x = z->_left;
+        Translant(z, z->_left);
+    }
+    else
+    {
+        cerr << "test" << endl;
+        y = Tree<T>::TreeMinNum(z->_right);
+        cerr << y->_key << endl;
+        y_originalcolor = y->color;
+        x = y->_right;
+        if (y->_p == z)
+            x->_p = y;
+        else
+        {
+            Translant(y, y->_right);
+            y->_right = z->_right;
+            y->_right->_p = y;
+        }
+        Translant(z, y);
+        y->_left = z->_left;
+        y->_left->_p = y;
+        y->color = z->color;
+    }
+    if (y_originalcolor = BALCK)
+        DeleteFixup(x);
+}
+
+template <typename T>
+void RBTree<T>::DeleteFixup(TreeNode<T> *x)
+{
+    while (x != Tree<T>::GetRoot() && x->color == BALCK)
+    {
+        if (x == x->_p->_left)
+        {
+            TreeNode<T> *w = x->_p->_right;
+            if (w->color == RED)
+            {
+                w->color = BALCK;
+                x->_p->color = RED;
+                LeftRotate(x->_p);
+                w = x->_p->_right;
+            }
+            if (w->_left->color == BALCK && w->_right->color == BALCK)
+            {
+                w->color = RED;
+                x = x->_p;
+            }
+            else
+            {
+                if (w->_right->color == BALCK)
+                {
+                    w->_left->color = BALCK;
+                    w->color = RED;
+                    RightRotate(w);
+                    w = w->_p->_right;
+                }
+                w->color = x->_p->color;
+                x->_p->color = BALCK;
+                w->_right->color = BALCK;
+                LeftRotate(x.p);
+                x = Tree<T>::GetRoot();
+            }
+        }
+    }
 }

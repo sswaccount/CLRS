@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-14 19:16:32
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-25 22:38:53
+ * @LastEditTime: 2022-03-26 16:16:23
  */
 #include <iostream>
 #include <sstream>
@@ -62,16 +62,16 @@ public:
     TreeNode<T> *IterativeTreeSearch(TreeNode<T> *x, T k) const;
     void Translant(TreeNode<T> *u, TreeNode<T> *v);
     void TreeDelete(TreeNode<T> *z);
-    void TreeOut(TreeNode<T> *x, string name = "test");
+    void TreeOut(TreeNode<T> *x, string name = "test", bool flag = false);
     TreeNode<T> *TreeMinNum(TreeNode<T> *x) const
     {
-        while (x->_left != nullptr)
+        while (x->_left != nullptr && x->_left->_key != -1)
             x = x->_left;
         return x;
     }
     TreeNode<T> *TreeMaxNum(TreeNode<T> *x) const
     {
-        while (x->_right != nullptr)
+        while (x->_right != nullptr && x->_left->_key != -1)
             x = x->_right;
         return x;
     }
@@ -223,7 +223,7 @@ void Tree<T>::TreeDelete(TreeNode<T> *z)
 }
 
 template <typename T>
-void Tree<T>::TreeOut(TreeNode<T> *x, string name)
+void Tree<T>::TreeOut(TreeNode<T> *x, string name, bool flag)
 {
     // 声明文件名称
     stringstream sstr;
@@ -232,16 +232,25 @@ void Tree<T>::TreeOut(TreeNode<T> *x, string name)
     char *filename = new char[num];
     sstr << name;
     sstr >> filename;
+
     freopen(filename, "w", stdout);
     cout << "digraph Tree{" << endl;
     queue<TreeNode<T> *> q;
-    if(x->_p!=nullptr)
+    if (x->_p != nullptr)
         cout << x->_key << "->" << x->_p->_key << endl;
     q.push(x);
     while (q.size())
     {
         TreeNode<T> *tmp = q.front();
         q.pop();
+        if (flag && tmp->_key != -1)
+        {
+            cout << tmp->_key << " [style=filled,fillcolor=";
+            if (tmp->color == RED)
+                cout << "lightcoral,color=red]" << endl;
+            else
+                cout << "grey49,color=black]" << endl;
+        }
         if (tmp->_left)
         {
             cout << tmp->_key << "->" << tmp->_left->_key << endl;
@@ -252,9 +261,9 @@ void Tree<T>::TreeOut(TreeNode<T> *x, string name)
             cout << tmp->_key << "->" << tmp->_right->_key << endl;
             q.push(tmp->_right);
         }
-        // cerr << q.size() << endl;
     }
-
+    if (flag)
+        cout << "-1 [style=filled,fillcolor=grey49,color=black]" << endl;
     cout << "}" << endl;
     fclose(stdout);
 }
