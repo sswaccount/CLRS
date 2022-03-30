@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-27 18:42:36
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-27 20:59:00
+ * @LastEditTime: 2022-03-29 21:43:27
  */
 
 #include <algorithm>
@@ -14,8 +14,8 @@ int main()
     char ver[8] = {'r', 's', 't', 'u', 'v', 'w', 'x', 'y'};
     Graph x(8, 10, ver);
 
-    freopen("BFS.dot", "w", stdout);
-    cout << "digraph Tree{" << endl;
+    // freopen("BFS.dot", "w", stdout);
+    // cout << "digraph Tree{" << endl;
 
     x.AddEdge('r', 'v', true);
     x.AddEdge('r', 's', true);
@@ -28,8 +28,9 @@ int main()
     x.AddEdge('u', 'x', true);
     x.AddEdge('x', 'y', true);
     x.BFS('s');
-
-    cout << "}" << endl;
-    fclose(stdout);
+    x.PrintPath('s', 'y');
+    // x.DFS();
+    // cout << "}" << endl;
+    // fclose(stdout);
     return 0;
 }
