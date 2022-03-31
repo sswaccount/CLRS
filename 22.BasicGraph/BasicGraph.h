@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-27 18:49:52
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-29 19:16:18
+ * @LastEditTime: 2022-03-31 18:56:51
  */
 #include <iostream>
 #include <vector>
@@ -20,22 +20,22 @@ enum VerClolor
 
 struct NextNode
 {
-    char adjvex;
+    string adjvex;
     NextNode *NEXT;
-    NextNode(char name = ' ')
+    NextNode(string name = "")
         : adjvex(name),
           NEXT(nullptr) {}
 };
 
 struct Vertex
 {
-    char _name;
+    string _name;
     VerClolor _color;
     Vertex *_pi;
     int _d;
     int _f;
     NextNode *_first;
-    Vertex(char name = ' ')
+    Vertex(string name = "")
         : _name(name),
           _color(WHITE),
           _pi(nullptr),
@@ -49,27 +49,34 @@ class Graph
 private:
     int vertex, edge;
     vector<Vertex> G;
-    map<char, int> index;
+    vector<Vertex> GT;
+    map<string, int> index;
     int time;
+    int count;
+    vector<string> topo;
 
 public:
-    Graph(int v, int e, char *vs)
+    Graph(int v, int e, string *vs)
         : vertex(v), edge(e)
     {
         for (int i = 0; i < v; ++i)
         {
             G.push_back(Vertex(vs[i]));
+            GT.push_back(Vertex(vs[i]));
             index.insert({vs[i], i});
         }
     }
-    void AddEdge(char x, char y, bool flag = false);
-    void BFS(char s);
-    void PrintPath(char v, char s);
-    void DFS();
-    void DFSVisit(char u);
+    void AddEdge(string x, string y, bool flag = false);
+    void BFS(string s);
+    void PrintPath(string v, string s);
+    void DFS(bool flag = false);
+    void DFSVisit(string u, bool flag);
+    void DFSVisit(string u);
+    void TopoLogicSort();
+    void StronglyConnectedComponents();
 };
 
-void Graph::AddEdge(char x, char y, bool flag)
+void Graph::AddEdge(string x, string y, bool flag)
 {
     NextNode *e = new NextNode(y);
     if (G[index[x]]._first == nullptr)
@@ -81,13 +88,25 @@ void Graph::AddEdge(char x, char y, bool flag)
             p = p->NEXT;
         p->NEXT = e;
     }
+
+    NextNode *eT = new NextNode(x);
+    if (GT[index[y]]._first == nullptr)
+        GT[index[y]]._first = eT;
+    else
+    {
+        NextNode *p = GT[index[y]]._first;
+        while (p->NEXT)
+            p = p->NEXT;
+        p->NEXT = eT;
+    }
+    
     if (flag)
         AddEdge(y, x);
-
-    // cout << x << "->" << y << endl;
+    // cout << y << "->" << x << endl;
+    
 }
 
-void Graph::BFS(char s)
+void Graph::BFS(string s)
 {
     for (auto u : G)
         if (u._name != s)
@@ -100,11 +119,11 @@ void Graph::BFS(char s)
     G[index[s]]._d = 0;
     G[index[s]]._pi = nullptr;
 
-    queue<char> Q;
+    queue<string> Q;
     Q.push(s);
     while (Q.size())
     {
-        char u = Q.front();
+        string u = Q.front();
         Q.pop();
         for (auto v = G[index[u]]._first; v; v = v->NEXT)
             if (G[index[v->adjvex]]._color == WHITE)
@@ -129,7 +148,7 @@ void Graph::BFS(char s)
     }
 }
 
-void Graph::PrintPath(char s, char v)
+void Graph::PrintPath(string s, string v)
 {
     if (v == s)
         cout << s << ' ';
@@ -142,20 +161,25 @@ void Graph::PrintPath(char s, char v)
     }
 }
 
-void Graph::DFS()
+void Graph::DFS(bool flag)
 {
     for (auto i : G)
     {
         i._color = WHITE;
         i._pi = nullptr;
+        // cerr << "dsadsa : " << i._name << endl;
     }
     time = 0;
+    count = 0;
     for (auto i : G)
+    {
+        // cout << "test : " << i._name << endl;
         if (i._color == WHITE)
-            DFSVisit(i._name);
+            DFSVisit(i._name, flag);
+    }
 }
 
-void Graph::DFSVisit(char u)
+void Graph::DFSVisit(string u, bool flag)
 {
     G[index[u]]._d = ++time;
     G[index[u]]._color = GRAY;
@@ -163,8 +187,61 @@ void Graph::DFSVisit(char u)
         if (G[index[v->adjvex]]._color == WHITE)
         {
             G[index[v->adjvex]]._pi = &G[index[u]];
-            DFSVisit(v->adjvex);
+            DFSVisit(v->adjvex, flag);
         }
     G[index[u]]._color = BLACK;
     G[index[u]]._f = ++time;
+
+    if (flag)
+    {
+        // cout << G[index[u]]._name << ' '
+        //      << G[index[u]]._d << ' '
+        //      << G[index[u]]._f << endl;
+        topo.push_back(u);
+    }
+}
+
+void Graph::TopoLogicSort()
+{
+    
+    for (int i = 1; i < topo.size(); ++i)
+        cout << topo[i - 1] << "--" << topo[i] << endl;
+}
+
+
+void Graph::StronglyConnectedComponents()
+{
+    DFS(true);
+    reverse(topo.begin(), topo.end());
+    
+    for (auto i : GT)
+    {
+        i._color = WHITE;
+        i._pi = nullptr;
+        // cerr << "dsadsa : " << i._name << endl;
+    }
+    time = 0;
+    for (auto i : topo)
+    {
+        if (GT[index[i]]._color == WHITE)
+        {
+            DFSVisit(GT[index[i]]._name);
+            cout << endl;
+        }
+    }
+}
+
+void Graph::DFSVisit(string u)
+{
+    GT[index[u]]._d = ++time;
+    GT[index[u]]._color = GRAY;
+    for (auto v = GT[index[u]]._first; v; v = v->NEXT)
+        if (GT[index[v->adjvex]]._color == WHITE)
+        {
+            GT[index[v->adjvex]]._pi = &GT[index[u]];
+            DFSVisit(v->adjvex);
+        }
+    GT[index[u]]._color = BLACK;
+    GT[index[u]]._f = ++time;
+    cout << u << ' ';
 }

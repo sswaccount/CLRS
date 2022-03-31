@@ -1,30 +1,13 @@
 digraph Tree{
-v->r
-r->v
-s->r
-r->s
-w->s
-s->w
-t->w
-w->t
-x->w
-w->x
-x->t
-t->x
-t->u
-u->t
-y->u
-u->y
-x->u
-u->x
-y->x
-x->y
-s [style=filled,fillcolor=".3 .0 1.0"]
-r [style=filled,fillcolor=".3 .3 1.0"]
-w [style=filled,fillcolor=".3 .3 1.0"]
-v [style=filled,fillcolor=".3 .6 1.0"]
-t [style=filled,fillcolor=".3 .6 1.0"]
-x [style=filled,fillcolor=".3 .6 1.0"]
-u [style=filled,fillcolor=".3 .9 1.0"]
-y [style=filled,fillcolor=".3 .9 1.0"]
+node[fontname="Simsun"]
+手表
+袜子->鞋
+内裤->鞋
+内裤->裤子
+裤子->鞋
+裤子->腰带
+衬衣->腰带
+衬衣->领带
+领带->夹克
+腰带->夹克
 }

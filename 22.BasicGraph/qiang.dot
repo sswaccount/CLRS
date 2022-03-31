@@ -1,0 +1,17 @@
+digraph Tree{
+rankdir=LR
+a->b
+e->a
+b->e
+b->f
+e->f
+b->c
+g->f
+f->g
+c->g
+d->c
+c->d
+g->h
+d->h
+h->h
+}
