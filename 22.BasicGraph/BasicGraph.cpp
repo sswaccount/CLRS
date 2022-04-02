@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-03-27 18:42:36
  * @LastEditors: ssw
- * @LastEditTime: 2022-03-31 18:56:21
+ * @LastEditTime: 2022-04-02 17:31:44
  */
 
 #include <algorithm>
@@ -12,7 +12,7 @@
 int main()
 {
     // string ver[9] = {"领带", "裤子", "内裤", "袜子", "手表", "鞋", "腰带", "衬衣", "夹克"};
-    string ver[8]={"b","e","a","c","d","f","g","h"};
+    string ver[8] = {"b", "e", "a", "c", "d", "f", "g", "h"};
     // for (int i = 0; i < 8; i++)
     //     ver[i] = 'a' + i;
     // for (auto i : ver)
