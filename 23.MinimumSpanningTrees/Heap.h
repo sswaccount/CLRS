@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-04-11 18:53:02
  * @LastEditors: ssw
- * @LastEditTime: 2022-04-11 21:50:40
+ * @LastEditTime: 2022-04-22 18:27:33
  */
 
 #include <vector>
@@ -85,6 +85,7 @@ private:
     }
 
 public:
+    // Heap() {}
     Heap(vector<Vertex> vT)
     {
         data.push_back(Vertex(' '));
