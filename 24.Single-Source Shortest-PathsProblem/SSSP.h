@@ -3,7 +3,7 @@
  * @Author: ssw
  * @Date: 2022-04-16 16:46:46
  * @LastEditors: ssw
- * @LastEditTime: 2022-04-22 19:13:30
+ * @LastEditTime: 2022-04-23 00:08:49
  */
 #include <iostream>
 #include <vector>
@@ -178,6 +178,7 @@ public:
         }
     }
     void AddEdge(string x, string y, int w, bool flag = false);
+    void AddEdge(int x, int y, int w);
     void PrintPath(string v, string s);
     void InitializeSingleSource(string s);
     void Relax(string u, string v, bool flag = false);
@@ -188,7 +189,17 @@ public:
     void DagShortestPath(string s);
     void Dijkstar(string s);
     friend ostream &operator<<(ostream &os, Graph data);
+    void InitDiff();
+    bool BellmanFord();
 };
+
+void Graph::AddEdge(int x, int y, int w)
+{
+    string xx, yy;
+    xx.push_back(x + 'a');
+    yy.push_back(y + 'a');
+    AddEdge(xx, yy, w, false);
+}
 
 void Graph::AddEdge(string x, string y, int w, bool flag)
 {
@@ -238,14 +249,13 @@ void Graph::Relax(string u, string v, bool flag)
     {
         G[index[v]]._d = G[index[u]]._d + weight[{u, v}];
         G[index[v]]._pi = &G[index[u]];
-        if(flag)
+        if (flag)
             Q->HeapDecreaseKey(v, G[index[v]]._d);
     }
 }
 
 bool Graph::BellmanFord(string root)
 {
-
     InitializeSingleSource(root);
     for (int i = 1; i < vertex; i++)
         for (auto it : weight)
@@ -340,4 +350,24 @@ ostream &operator<<(ostream &os, Graph data)
     for (auto i : data.G)
         os << i._name << ' ' << i._d << endl;
     return os;
+}
+
+void Graph::InitDiff()
+{
+    for (auto &i : G)
+    {
+        i._d = 0;
+        i._pi = nullptr;
+    }
+}
+bool Graph::BellmanFord()
+{
+    InitDiff();
+    for (int i = 1; i < vertex; i++)
+        for (auto it : weight)
+            Relax(it.first.first, it.first.second);
+    for (auto it : weight)
+        if (G[index[it.first.second]]._d > G[index[it.first.first]]._d + it.second)
+            return false;
+    return true;
 }
